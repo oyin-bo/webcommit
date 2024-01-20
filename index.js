@@ -28,7 +28,7 @@
  * @param {PrepareParams} params
  * @returns {Promise<Committer>}
  */
-async function prepareCommit({
+async function webcommit({
   owner, repo, branch,
   fetch = defaultFetch(),
   auth, 
@@ -162,4 +162,11 @@ function defaultFetch() {
   return fetch;
 }
 
-module.exports = prepareCommit;
+if (typeof module !== 'undefined' && module.exports)
+  module.exports = webcommit;
+else if (typeof window !== 'undefined' && window)
+  /** @type {*} */(window).webcommit = webcommit;
+else if (typeof self !== 'undefined' && self)
+  /** @type {*} */(self).webcommit = webcommit;
+else
+  /** @type {*} */(self).webcommit = webcommit;

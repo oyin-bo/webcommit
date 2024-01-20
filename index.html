@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>webcommit</title>
+<style>
+pre {
+  border: solid 1px silver;
+  border-radius: 0.2em;
+  padding: 0.5em;
+  background: whitesmoke;
+}
+</style>
+</head>
+<body>
+
+<script src=index.js></script>
+<script type="module">
+  import { Octokit } from "https://esm.sh/@octokit/rest";
+  import { marked } from "https://esm.sh/marked@11.1.1"
+
+  (async function () {
+    try {
+      const readme = await fetch('README.md').then(x => x.text());
+      const html = marked(readme);
+
+      const readmeElem = document.createElement('div');
+      readmeElem.innerHTML = html;
+
+      window.Octokit = Octokit;
+
+      for (const pre of readmeElem.querySelectorAll('pre')) {
+        makeRunnable(pre);
+      }
+
+      document.body.appendChild(readmeElem);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to load/process README');
+    }
+
+    function makeRunnable(pre) {
+      const btn = document.createElement('button');
+      btn.style.display = 'block';
+      btn.textContent = 'Run';
+      pre.appendChild(btn);
+
+      btn.onclick = async function() { try {
+        const js = pre.textContent;
+        const fn = eval('(async function () { ' + js + '\n})()');
+        await fn;
+      } catch (err) {
+        console.error(err);
+        alert('Failed to run code');
+      } };
+    }
+
+  })();
+</script>
+
+</body>
+</html>
