@@ -41,13 +41,14 @@ pre {
     }
 
     function makeRunnable(pre) {
+      const jsContent = pre.textContent;
       const btn = document.createElement('button');
       btn.style.display = 'block';
       btn.textContent = 'Run';
       pre.appendChild(btn);
 
       btn.onclick = async function() { try {
-        const js = pre.textContent;
+        const js = jsContent;
         const fn = eval('(async function () { ' + js + '\n})()');
         await fn;
       } catch (err) {

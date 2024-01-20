@@ -31,9 +31,9 @@
 async function webcommit({
   owner, repo, branch,
   fetch = defaultFetch(),
-  auth, 
+  auth,
   octokit }) {
-  
+
   const headers = {
     ...(auth && { Authorization: `token ${auth}` }),
     Accept: "application/vnd.github.v3+json"
@@ -48,7 +48,7 @@ async function webcommit({
   const headCommit = await (octokit ?
     octokit.rest.git.getCommit({ owner, repo, commit_sha: ref.object.sha }).then(res => res.data) :
     fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${ref.object.sha}`, { headers }).then(x => x.json()));
-  
+
   /**
    * @type {TreeItem[]}
    */
@@ -142,7 +142,7 @@ function deriveMode(file, mode) {
   else if (typeof mode === 'number') return mode.toString(8);
   else return mode; // TODO: handle 'r', 'w', 'x' and 'x+' modes
 }
-  
+
 /**
  * @param {string | ArrayBuffer | Uint8Array} content
  */

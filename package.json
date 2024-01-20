@@ -1,6 +1,6 @@
 {
   "name": "webcommit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Self-contained library to commit into GitHub: Oleg Mihailik",
   "main": "index.js",
   "homepage": "https://oyin.bo/webcommit",
@@ -14,14 +14,8 @@
     "commit"
   ],
   "author": "Oleg Mihailik",
-  "license": "not yet",
+  "license": "MIT",
   "devDependencies": {
-    "@atproto/api": "^0.8.0",
-    "@ipld/car": "^5.2.6",
-    "@octokit/rest": "^20.0.2",
-    "cbor-x": "^1.5.8",
-    "esbuild": "^0.19.11",
-    "multiformats": "^13.0.1",
-    "octokit-commit-multiple-files": "^5.0.0"
+    "@octokit/rest": "^20.0.2"
   }
 }
