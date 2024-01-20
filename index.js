@@ -47,7 +47,7 @@ async function webcommit({
   /** @type {CommitData} */
   const headCommit = await (octokit ?
     octokit.rest.git.getCommit({ owner, repo, commit_sha: ref.object.sha }).then(res => res.data) :
-    fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${ref.object.sha}`, { headers }).then(x => x.json()));
+    fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${ref.object.sha}`, { headers }).then(x => x.json()));
 
   /**
    * @type {TreeItem[]}
@@ -116,16 +116,25 @@ async function webcommit({
       fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ tree, base_tree: headCommit.tree })
+        body: JSON.stringify({ tree, base_tree: headCommit.tree.sha })
       }).then(x => x.json()));
 
     /** @type {Awaited<ReturnType<import('@octokit/rest').Octokit['rest']['git']['createCommit']>>['data']} */
     const commitObj = await (octokit ?
-      octokit.rest.git.createCommit({ owner, repo, message, tree: treeObj.sha, parents: [headCommit.tree.sha] }).then(x => x.data) :
+      octokit.rest.git.createCommit({ owner, repo, message, tree: treeObj.sha, parents: [headCommit.sha] }).then(x => x.data) :
       fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ message, tree: treeObj.sha, parents: [headCommit.tree] })
+        body: JSON.stringify({ message, tree: treeObj.sha, parents: [headCommit.sha] })
+      }).then(x => x.json()));
+
+    /** @type {Awaited<ReturnType<import('@octokit/rest').Octokit['rest']['git']['updateRef']>>['data']} */
+    const updatedRef = await (octokit ?
+      octokit.rest.git.updateRef({ owner, repo, ref: `heads/${branch}`, sha: commitObj.sha }) :
+      fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ sha: commitObj.sha })
       }).then(x => x.json()));
 
     return commitObj;

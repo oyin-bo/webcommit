@@ -16,10 +16,11 @@ const prepare = await webcommit({
 
 await prepare.put(
   'test.txt',
-  new Date() + ''
+  'No dependencies: ' + new Date()
 );
 
-const commit = await prepare.commit('New addition from test');
+const commit = await prepare.commit('Committing with no dependencies at all');
+alert('Committed \n' + JSON.stringify(commit, null, 2));
 ```
 
 With Octokit:
@@ -36,10 +37,10 @@ const prepare = await webcommit({
 
 await prepare.put(
   'test.txt',
-  new Date() + ''
+  'Using Octokit: ' + new Date()
 );
 
-const commit = await prepare.commit('New addition from test');
+const commit = await prepare.commit('Using Octokit');
 
 alert('Committed \n' + JSON.stringify(commit, null, 2));
 
